@@ -1,63 +1,101 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
+using System.Globalization;
 using System.Linq;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace C_b2
+namespace OOPprac
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Nhap email cua ban: ");
-            string email = Console.ReadLine();
-            while (!validateemail(email))
+            int key = ShowGameUI();
+            Item[] invetory = new Item[10];
+            switch(key)
             {
-                Console.WriteLine("email khong hop le");
-                Console.WriteLine("email phai co dinh dang : exp@abc.def");
-                Console.WriteLine("Nhap email cua ban: ");
-                email = Console.ReadLine();
+                case 1:
+                    AddItem(invetory);
+                    break;
+                case 3:
+                    Console.WriteLine("danh sach vat pham: ");
+                    ShowAllItem(invetory);
+                    break;
+                case 4:
+                    thoat();
+                    break;
             }
-            Console.WriteLine("email hop le");
-      
             Console.ReadKey();
         }
-        static bool validateemail(string email)
-        {
-            int count = 0;
 
-            foreach (char c in email)
+        public static int ShowGameUI()
+        {
+            Console.WriteLine("===========================");
+            Console.WriteLine("1. Them vat pham");
+            Console.WriteLine("2. Xoa vat pham");
+            Console.WriteLine("3. Hien thi toan bo vat pham");
+            Console.WriteLine("4. Thoat");
+
+            int key = int.Parse(Console.ReadLine());
+            return key;
+        }
+
+        public static void AddItem(Item[] items)
+        {
+            Console.WriteLine("Nhap ten cua vat pham");
+            string itemName = Console.ReadLine();
+            Item item = new Item(itemName);
+            if (GameHelper.GetRandom(0,101) <= 5)
             {
-                if (c == '@')
+                item.quality = (ItemQuality)3;
+            }
+            else if (GameHelper.GetRandom(0, 101) <=15)
+            {
+                item.quality = (ItemQuality)2;
+            }
+            else if (GameHelper.GetRandom(0, 101) <= 40)
+            {
+                item.quality = (ItemQuality)1;
+            }
+            else
+            {
+                item.quality = (ItemQuality)0;
+            }
+            item.price = GameHelper.GetRandom(50,500);
+            item.quantity = 1;
+
+            AddItemToArray(items,item);
+            GameHelper.ShowItemInfo(item);
+        }
+
+        public static void AddItemToArray(Item[] items, Item item)
+        {
+            for (int i =0;i< items.Length;i++)
+            {
+                if (items[i] == null)
                 {
-                    count++;
+                    items[i] = item;
+                    break;
                 }
             }
-            if (count > 1)
+        }
+        public static void ShowAllItem(Item[] items)
+        {
+            for (int i=0;i< items.Length;i++)
             {
-                Console.WriteLine("Email khong dung dinh dang");
-            }
-            if (email.IndexOf("@") > 0 || email.IndexOf("@") < email.Length - 1)
-            {
-                if (email.IndexOf(".") > 0 || email.IndexOf(".") < email.Length - 1)
+                if (items[i] != null)
                 {
-                    if (email.IndexOf("@") < email.IndexOf("."))
-                    {
-                        if (!email.Contains(" "))
-                        {
-                            int Countdot = email.Length - email.IndexOf(".") - 1;
-                            int countA = email.IndexOf(".") - email.IndexOf("@") - 1;
-                            if ((Countdot > 0 && Countdot < 4) && (countA > 0 && countA < 8))
-                            {
-                                return true;
-                            }
-                        }
-                    }
+                    GameHelper.ShowItemInfo(items[i]);
                 }
             }
-            return false;
+        }
+
+        public static void thoat()
+        {
+            Environment.Exit(0);
         }
     }
 }
