@@ -1,3 +1,4 @@
+﻿using OOPpractice;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -11,22 +12,59 @@ namespace OOPprac
 {
     internal class Program
     {
+        public static Item[] invetory = new Item[10];
         static void Main(string[] args)
         {
             int key = ShowGameUI();
-            Item[] invetory = new Item[10];
-            switch(key)
+            //Item[] invetory = new Item[10];
+            switch (key)
             {
                 case 1:
-                    AddItem(invetory);
+                    AddItem(ref invetory);
                     break;
                 case 3:
                     Console.WriteLine("danh sach vat pham: ");
-                    ShowAllItem(invetory);
+                    for (int i=0;i<invetory.Length;i++)
+                    {
+                        if (invetory[i] != null)
+                        {
+                            GameHelper.ShowItemInfo(invetory[i]);
+                        }
+                    }
+                    char Choice;
+                    Console.WriteLine("Ban muon xoa mot so vat pham khong");
+                    Choice = char.Parse(Console.ReadLine());
+                    switch(Choice)
+                    {
+                        case 'Y':
+                        case 'y':
+                            {
+                                int idXoa = 0;
+                                Console.WriteLine("Nhap vat pham muon xoa: ");
+                                idXoa = int.Parse(Console.ReadLine());
+                                XoaItem(invetory, idXoa);
+                                break;
+                            }
+                        case 'n':
+                        case 'N':
+                            {
+                                break;
+                            }
+                        default:
+                            {
+                                Console.WriteLine("Khong co lua chon nay");
+                                break;
+                            }
+                    }
                     break;
                 case 4:
                     thoat();
                     break;
+                default:
+                    {
+                        Console.WriteLine("Khong co lua chon nay");
+                        break;
+                    }
             }
             Console.ReadKey();
         }
@@ -43,37 +81,37 @@ namespace OOPprac
             return key;
         }
 
-        public static void AddItem(Item[] items)
+        public static void AddItem(ref Item[] items)
         {
             Console.WriteLine("Nhap ten cua vat pham");
             string itemName = Console.ReadLine();
             Item item = new Item(itemName);
-            if (GameHelper.GetRandom(0,101) <= 5)
+            if (GameHelper.GetRandom(0, 101) <= 5)
             {
-                item.quality = (ItemQuality)3;
+                item.rarelity = (quality)3;
             }
-            else if (GameHelper.GetRandom(0, 101) <=15)
+            else if (GameHelper.GetRandom(0, 101) <= 15)
             {
-                item.quality = (ItemQuality)2;
+                item.rarelity = (quality)2;
             }
             else if (GameHelper.GetRandom(0, 101) <= 40)
             {
-                item.quality = (ItemQuality)1;
+                item.rarelity = (quality)1;
             }
             else
             {
-                item.quality = (ItemQuality)0;
+                item.rarelity = (quality)0;
             }
-            item.price = GameHelper.GetRandom(50,500);
+            item.price = GameHelper.GetRandom(50, 500);
             item.quantity = 1;
 
-            AddItemToArray(items,item);
+            AddItemToArray(ref items, item);
             GameHelper.ShowItemInfo(item);
         }
 
-        public static void AddItemToArray(Item[] items, Item item)
+        public static void AddItemToArray(ref Item[] items, Item item)
         {
-            for (int i =0;i< items.Length;i++)
+            for (int i = 0; i < items.Length; i++)
             {
                 if (items[i] == null)
                 {
@@ -84,7 +122,7 @@ namespace OOPprac
         }
         public static void ShowAllItem(Item[] items)
         {
-            for (int i=0;i< items.Length;i++)
+            for (int i = 0; i < items.Length; i++)
             {
                 if (items[i] != null)
                 {
@@ -96,6 +134,21 @@ namespace OOPprac
         public static void thoat()
         {
             Environment.Exit(0);
+        }
+
+        public static void XoaItem(Item[] items, int Idxoa)
+        {
+            for (int i =0;i< items.Length;i++)
+            {
+                if (items[i] != null)
+                {
+                    if (items[i].id == Idxoa)
+                    {
+                        items[i] = null;
+                        break;
+                    }
+                }
+            }
         }
     }
 }
